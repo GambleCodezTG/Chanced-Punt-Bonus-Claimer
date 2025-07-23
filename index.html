@@ -6,100 +6,102 @@
   <title>GambleCodez Bonus Claim</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #000;
+      background: #0a0a0a;
       color: #fff;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      padding: 20px;
+      padding: 2rem;
     }
     .container {
-      max-width: 420px;
+      max-width: 500px;
       margin: auto;
       background: #111;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 0 15px #0ff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #0ff3;
     }
-    img.banner {
-      width: 100%;
+    .banner {
+      max-width: 100%;
+      margin-bottom: 1.5rem;
       border-radius: 12px;
-      margin-bottom: 20px;
     }
-    input {
-      width: 90%;
-      padding: 12px;
-      font-size: 18px;
-      border-radius: 10px;
+    input[type="text"] {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
       border: none;
-      outline: none;
-      margin-top: 10px;
-      box-sizing: border-box;
-    }
-    .tooltip {
-      font-size: 14px;
-      color: #0ff;
-      margin-top: 6px;
-      min-height: 18px;
     }
     button {
-      background: #0ff;
-      color: #000;
-      padding: 12px 20px;
-      font-size: 16px;
+      padding: 1rem 2rem;
+      margin: 0.5rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      background: #ff0066;
+      color: #fff;
       border: none;
-      border-radius: 10px;
-      margin: 10px 5px 0 5px;
       cursor: pointer;
-      min-width: 130px;
-      transition: background 0.3s ease;
     }
     button:hover {
-      background: #00e0e0;
+      background: #ff3399;
+    }
+    .tooltip {
+      font-size: 0.9rem;
+      margin-top: -0.2rem;
+      margin-bottom: 1rem;
+      color: #bbb;
+    }
+    .fallback {
+      color: #ff6666;
+    }
+    .hidden {
+      display: none;
     }
     .signup, .socials {
-      margin-top: 30px;
-      text-align: left;
-    }
-    .signup h3, .socials h3 {
-      margin-bottom: 10px;
+      margin-top: 2rem;
     }
     .signup a, .socials a {
       color: #0ff;
       display: block;
-      margin-top: 6px;
+      margin-top: 0.75rem;
       text-decoration: none;
-      word-break: break-word;
     }
     .footer {
-      margin-top: 40px;
-      font-size: 12px;
-      color: #555;
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: #777;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="https://raw.githubusercontent.com/GambleCodezTG/Chanced-Punt-Bonus-Claimer/51e3fb1cee433e80be6f7f7c218e66e170c149e7/public/banner.png" alt="GambleCodez Banner" class="banner" />
+    <img
+      src="https://raw.githubusercontent.com/GambleCodezTG/Chanced-Punt-Bonus-Claimer/51e3fb1cee433e80be6f7f7c218e66e170c149e7/public/banner.png"
+      alt="GambleCodez Banner"
+      class="banner"
+    />
 
     <h2>🎁 Claim Your Bonus Code</h2>
-    <input type="text" id="codeInput" placeholder="Paste or type bonus code" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" />
+    <input type="text" id="codeInput" placeholder="Paste or type bonus code" />
     <div class="tooltip" id="tooltip">Tip: If empty, we'll use your clipboard code automatically!</div>
-
-    <div>
-      <button onclick="claim('chanced')">Claim at Chanced</button>
-      <button onclick="claim('punt')">Claim at Punt</button>
+    <div class="tooltip fallback hidden" id="tooltip-fallback">
+      ⚠️ Clipboard access denied or empty.
     </div>
+
+    <button onclick="claim('chanced')">Claim at Chanced</button>
+    <button onclick="claim('punt')">Claim at Punt</button>
 
     <div class="signup">
       <h3>🔓 Don’t have an account?</h3>
-      <a href="https://chanced.com/c/ev1h43" target="_blank" rel="noopener noreferrer">Sign up for Chanced</a>
-      <a href="https://punt.com/c/857fdb" target="_blank" rel="noopener noreferrer">Sign up for Punt</a>
+      <a href="https://chanced.com/c/ev1h43" target="_blank">Sign up for Chanced</a>
+      <a href="https://punt.com/c/857fdb" target="_blank">Sign up for Punt</a>
     </div>
 
     <div class="socials">
       <h3>🌐 GambleCodez Socials</h3>
-      <a href="https://t.me/GambleCodezDrops" target="_blank" rel="noopener noreferrer">Telegram Channel</a>
-      <a href="https://x.com/GambleCodez" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+      <a href="https://t.me/GambleCodezDrops" target="_blank">Telegram</a>
+      <a href="https://x.com/GambleCodez" target="_blank">X (Twitter)</a>
     </div>
 
     <div class="footer">
@@ -108,35 +110,50 @@
   </div>
 
   <script>
-    // Autofill from local storage if previously used
-    window.onload = () => {
-      const saved = localStorage.getItem("bonus_code");
-      if (saved) {
-        document.getElementById("codeInput").value = saved;
-      }
-    };
-
     async function claim(site) {
       const input = document.getElementById("codeInput");
+      const tooltipFallback = document.getElementById("tooltip-fallback");
+      tooltipFallback.classList.add("hidden");
+
       let code = input.value.trim();
 
       if (!code) {
         try {
-          code = await navigator.clipboard.readText();
-          if (!code) throw new Error("Empty clipboard");
-          document.getElementById("tooltip").textContent = "✅ Used code from clipboard: " + code;
-        } catch (err) {
-          document.getElementById("tooltip").textContent = "⚠️ Please allow clipboard access or paste your code manually.";
+          const permission = await navigator.permissions.query({ name: "clipboard-read" });
+          if (permission.state === "granted" || permission.state === "prompt") {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+              code = text.trim();
+              localStorage.setItem("lastBonusCode", code);
+              document.getElementById("tooltip").textContent = "✅ Used clipboard: " + code;
+            } else {
+              tooltipFallback.classList.remove("hidden");
+              return;
+            }
+          } else {
+            tooltipFallback.classList.remove("hidden");
+            return;
+          }
+        } catch (e) {
+          tooltipFallback.classList.remove("hidden");
           return;
         }
       }
 
       if (code) {
-        localStorage.setItem("bonus_code", code);
-        const base = site === "chanced" ? "https://www.chanced.com/?rbc=" : "https://www.punt.com/?rbc=";
+        const base = site === "chanced"
+          ? "https://www.chanced.com/?rbc="
+          : "https://www.punt.com/?rbc=";
         window.location.href = base + encodeURIComponent(code);
       }
     }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const lastCode = localStorage.getItem("lastBonusCode");
+      if (lastCode) {
+        document.getElementById("codeInput").value = lastCode;
+      }
+    });
   </script>
 </body>
 </html>
