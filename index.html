@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GambleCodez Bonus Claim</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: #111;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 15px #0ff;
+    }
+    img.banner {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 90%;
+      padding: 12px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      margin-top: 10px;
+    }
+    .tooltip {
+      font-size: 14px;
+      color: #0ff;
+      margin-top: 6px;
+    }
+    button {
+      background: #0ff;
+      color: #000;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00e0e0;
+    }
+    .signup, .socials {
+      margin-top: 30px;
+    }
+    .signup a, .socials a {
+      color: #0ff;
+      display: block;
+      margin-top: 10px;
+      text-decoration: none;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://i.imgur.com/UMTUGlK.png" alt="GambleCodez" class="banner" />
+
+    <h2>🎁 Claim Your Bonus Code</h2>
+    <input type="text" id="codeInput" placeholder="Paste or type bonus code" />
+    <div class="tooltip" id="tooltip">Tip: If empty, we'll use your clipboard code automatically!</div>
+
+    <button onclick="claim('chanced')">Claim at Chanced</button>
+    <button onclick="claim('punt')">Claim at Punt</button>
+
+    <div class="signup">
+      <h3>🔓 Don’t have an account?</h3>
+      <a href="https://chanced.com/c/ev1h43" target="_blank">Sign up for Chanced</a>
+      <a href="https://punt.com/c/857fdb" target="_blank">Sign up for Punt</a>
+    </div>
+
+    <div class="socials">
+      <h3>🌐 GambleCodez Socials</h3>
+      <a href="https://gamblecodez.com" target="_blank">Telegram</a>
+      <a href="https://x.gamblecodez.com" target="_blank">X (Twitter)</a>
+    </div>
+
+    <div class="footer">
+      © 2025 GambleCodez · All Rights Reserved
+    </div>
+  </div>
+
+  <script>
+    // Auto-fill from local storage if previously used
+    window.onload = () => {
+      const saved = localStorage.getItem("bonus_code");
+      if (saved) {
+        document.getElementById("codeInput").value = saved;
+      }
+    };
+
+    async function claim(site) {
+      const input = document.getElementById("codeInput");
+      let code = input.value.trim();
+
+      if (!code) {
+        try {
+          code = await navigator.clipboard.readText();
+          if (!code) throw new Error("Empty clipboard");
+          document.getElementById("tooltip").textContent = "✅ Used code from clipboard: " + code;
+        } catch (err) {
+          document.getElementById("tooltip").textContent = "⚠️ Please allow clipboard access or paste your code manually.";
+          return;
+        }
+      }
+
+      if (code) {
+        localStorage.setItem("bonus_code", code);
+        const base = site === "chanced" ? "https://www.chanced.com/?rbc=" : "https://www.punt.com/?rbc=";
+        window.location.href = base + encodeURIComponent(code);
+      }
+    }
+  </script>
+</body>
+</html>
